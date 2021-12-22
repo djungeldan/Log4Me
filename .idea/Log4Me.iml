@@ -5,7 +5,7 @@
       <excludeFolder url="file://$MODULE_DIR$/venv" />
       <excludeFolder url="file://$MODULE_DIR$/venvp3" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.10 (Log4Me)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 2.7 (Log4Me)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

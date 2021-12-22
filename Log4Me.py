@@ -7,10 +7,17 @@
 import os
 from git import Repo
 
+def delsnapshot(found,snapshot):
+    if found == True:
+        os.remove(snapshot)
+        print("Deleted snapshot file (just so python doesnt get confused, its delicate <3)")
+        return True
+    elif not found:
+        print("Could not find snapshot file, will continue anyway but marshalsec may error out.")
+        return True
 
-def __main__():
-    doesmsecexist()
-
+def movetomsec():
+    os.system("cd marshalsec-master")
 
 def buildmsec():
     # Updates package lists and gets maven from apt if not already there
@@ -39,7 +46,7 @@ def buildmsec():
 # a shitting java package in python
 # It also lets the program know if it built properly so ig that's a plus
 
-def doesmsecexist():
+def marshalsecinit():
     global marshalcheck
 
     # disclaimer please don't read this this fucking sucks but its the only way my monkey brain
@@ -79,7 +86,8 @@ def doesmsecexist():
                 buildsuccess = buildmsec()
                 if buildsuccess == "y":
                     print("Built")
-                break
+                return True
+
 
         if not downloaded:
             print("Marshalsec was not downloaded successfully, or the permissions in this directory are not configured "
@@ -92,27 +100,70 @@ def doesmsecexist():
         return True
 
 
-def getInfo():
-    global ip
-    global port
-    valid = False
-    while not valid:
-        ip = input("Please enter the ip address of the target.")
-        port = input("Please enter the port if known. (default 80)")
+def getip():
+    ip = input("Please enter the ip address of the target.")
+    return ip
 
-        if port != 80:
-            if port >> 99999 or port.isdigit() == False:
-                print("Invalid port specification. Defaulting to 80.")
-                port = 80
-        else:
-            port = port
+def getport():
+    port = input("Please enter the port if known. (default 80)")
+
+    if port != 80:
+        if port >> 99999 or port.isdigit() == False:
+            print("Invalid port specification. Defaulting to 80.")
+            port = 80
+            return port
+    else:
+        port = port
+        return port
+
+#TODO start marshalsec
+
+def marshalsecstart():
+
+    global find_snapshot
+
+    counter = 0
+    found = False
+
+    if marshalcheck == True:
+        movetomsec()
+
+        #find the snapshot .jar and delete it so that python doesnt get confused
+
+        find_snapshot = os.listdir("./")
+
+        #prep for aids btw
+
+        for i in find_snapshot:
+            #split current element
+            findme = i.split()
+
+            #counter to save place
+            counter =+ 1
+
+            #iterate through current element
+
+            for i in findme:
+                #if it sees snapshot, tell python
+                if i.lower() == "snapshot":
+                    found = True
+                    break
+
+                else:
+                    continue
+
+            if found == True:
+                delsnapshot(found,find_snapshot[counter])
+                break
+
+            elif not found:
+                break
 
 
-def marshalsecInit():
-    print("nothing here yet, this is where marshalsec should be run")
 
+if marshalsecinit() == True:
+    marshalsecstart()
 
-__main__()
 
 # TODO COMMENT YA DAMN CODE
 
